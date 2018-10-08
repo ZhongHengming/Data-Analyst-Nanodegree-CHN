@@ -23,3 +23,11 @@
 - 提交书面报告
   - 数据整理工作报告
   - 数据分析和可视化报告
+
+**项目文件：**
+
+- `twitter_archive_enhanced.csv`：给定的文件
+- `image_predictions.tsv`：以编程方式下载的文件
+- `tweet_json.txt`：通过 API 构建的文件
+- `twitter_archive_master.csv`：合并与清洗后的数据
+
