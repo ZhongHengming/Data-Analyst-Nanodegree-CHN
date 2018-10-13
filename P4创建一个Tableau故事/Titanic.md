@@ -4,16 +4,50 @@
 
 本项目通过对Titanic数据集（泰坦尼克号上2224名乘客及船员的数据子集，包括了人口统计资料和乘客信息）进行可视化分析，探寻Titanic乘客的 **生还率** 与各因素（客舱等级、性别、年龄、同伴数量等）的关系。
 
-`Final Titanic Story`：https://public.tableau.com/views/Titanic1_29/1_1?:embed=y&:display_count=yes&publish=yes
+`Final Titanic Story`：
+
+https://public.tableau.com/views/Titanic1_29/1_1?:embed=y&:display_count=yes&publish=yes
 
 `Initial Titanic Story`：
 
-## 设计
+https://public.tableau.com/views/Titanic_619/1_1?:embed=y&:display_count=yes&publish=yes
+
+### 设计
 
 本项目进行了以下可视化探索分析：
 
-- 利用表格，统计全体乘客的生还比率及人数
+- 利用表格，统计乘客的生还比率及人数
 - 利用填色表格，统计不同等级的船舱里，不同性别乘客的生还率
 - 利用饼图，统计不同年龄段乘客的生还率
-- 利用曲线图，统计同船父母子女数量不同，生还率有什么变化
+- 利用折线图，统计同船父母子女数量不同，生还率有什么变化
 - 利用柱状图，统计同船兄弟姐妹及配偶数量不同，生还率有什么变化
+
+所有图表实现可视化及交互，在任意图表中点选，其余图表可进行联动展示
+
+### 反馈
+
+**反馈问题***
+
+- 可视化图表重复
+- 图表的图例颜色比较杂乱，不加图例说明易混淆
+- 部分图表里的图例标签没能显示
+- 最好有少量文字进行可视化说明
+
+**反馈修改**
+
+根据反馈所做的修改：
+
+- 可视化图表进行变化，尽量不重复
+- 图表的图例颜色尽量简洁不重复
+- 增加图例标签说明
+- 因图例大小问题导致的标签不显示，添加注释说明
+- 增加少量文字进行项目说明
+
+### 资源
+
+在项目实践过程中参考了以下网站：
+
+- [Tableau官方网站](https://public.tableau.com/zh-cn/s/gallery)
+
+### 
+
