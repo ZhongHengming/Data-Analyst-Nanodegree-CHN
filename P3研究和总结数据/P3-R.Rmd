@@ -1,0 +1,467 @@
+---
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+白葡萄酒数据探索性分析 By Jerry Shi
+========================================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using
+# in your analysis in this code chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk.
+# This prevents the code from displaying in the knitted HTML output.
+# You should set echo=FALSE for all code chunks in your file.
+
+library(ggplot2)
+library(GGally)
+library(psych)
+library(varhandle)
+library(memisc)
+library(RColorBrewer)
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+wine = read.csv('wineQualityWhites.csv')
+str(wine)
+```
+
+# Univariate Plots Section
+
+白葡萄酒数据集共包含4898个样本和13个变量，忽略其中的样本编号变量。以下列出各变量，并对各个变量做单变量EDA：
+
+#### 变量
+
+* fixed acidity/非挥发性酸度: g/dm^3
+* volatile acidity/挥发性酸度: g/dm^3
+* citric acid/柠檬酸: g/dm^3
+* residual sugar/残留糖分: g/dm^3
+* chlorides/盐分: g/dm^3
+* free sulfur dioxide/游离二氧化硫: mg/dm^3
+* total sulfur dioxide/总二氧化硫: mg/dm^3
+* density/密度: g/dm^3
+* pH/酸碱度
+* sulphates/硫酸盐浓度: g/dm^3
+* alcohol/酒精度: %
+* quality/评分：0~10
+
+#### EDA
+
+1. fixed acidity/非挥发性酸度: g/dm^3
+
+```{r echo=FALSE, Univariate_Plots}
+ggplot(data = wine, aes(x = fixed.acidity)) +
+        geom_histogram(bins = 60) +
+        xlim(4,10)
+```
+
+从直方图中可以看出，大部分葡萄酒的非挥发性酸度在6-8之间，大体呈正态分布，相关统计值如下：
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(fixed.acidity))
+```
+
+
+2. volatile acidity/挥发性酸度: g/dm^3
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = volatile.acidity)) +
+        geom_histogram(bins = 103)
+ggplot(data = wine, aes(x = volatile.acidity)) +
+        geom_histogram(bins = 45) +
+        scale_x_log10()
+```
+
+在原始直方图中分布稍有偏斜，因此进行对数转换。从转换后的直方图中，可以看到变量也是大体在0.1-1.0间呈正态分布的。相关统计值如下：
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(volatile.acidity))
+```
+
+
+3. citric acid/柠檬酸: g/dm^3
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = citric.acid)) +
+        geom_histogram(bins = 75) +
+        xlim(0, 0.75)
+```
+
+由上图可以看出，大部分葡萄酒的柠檬酸在0.1-0.5g/dm^3之间，整体呈正态分布，但在0.5附近形成了一个高峰。初步判断这可能和葡萄酒的规格有关。相关统计值如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(citric.acid))
+```
+
+
+4. residual sugar/残留糖分: g/dm^3
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = residual.sugar)) +
+        geom_histogram(bins = 200) +
+        xlim(0, 20)
+ggplot(data = wine, aes(x = residual.sugar)) +
+        geom_histogram(bins = 65) +
+        xlim(0, 20) +
+        scale_x_log10()
+```
+
+在原始直方图中，该变量分布偏斜，因此进行对数转换。从转换后的直方图中可以明显看出变量呈双峰分布。相关统计值如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(residual.sugar))
+```
+
+5. chlorides/盐分: g/dm^3
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = chlorides)) +
+        geom_histogram(bins = 101) +
+        xlim(0,0.1)
+
+```
+
+从直方图中可以看出，大部分葡萄酒的盐分都位于0.025-0.075g/dm^3的范围内，且呈正态分布。相关统计值如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(chlorides))
+```
+
+
+6. free sulfur dioxide/游离二氧化硫: mg/dm^3
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = free.sulfur.dioxide)) +
+        geom_histogram(bins = 100) +
+        xlim(0, 100)
+```
+
+由图可见，大部分葡萄酒的游离二氧化硫含量在0-75mg/d^3的范围内，呈正态分布。相关统计值如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(free.sulfur.dioxide))
+```
+
+7. total sulfur dioxide/总二氧化硫: mg/dm^3
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = total.sulfur.dioxide)) +
+        geom_histogram(bins = 301) +
+        xlim(0, 300)
+```
+
+由图，大部分葡萄酒的总二氧化硫含量在50-250mg/d^3的范围内，呈正态分布。相关统计值如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(total.sulfur.dioxide))
+```
+
+8. density/密度: g/dm^3
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = density)) +
+        geom_histogram(bins = 200) +
+        xlim(0.985, 1.005)
+        
+```
+
+由图，大部分葡萄酒的密度在0.99-1g/d^3的范围内，呈正态分布，误差范围较小。相关统计值如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(density))
+```
+
+9. pH/酸碱度
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = pH)) +
+        geom_histogram(bins = 110)
+```
+
+由图，大部分葡萄酒的酸碱度在2.7-3.6之间，呈正态分布。相关统计值如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(pH))
+```
+
+10. sulphates/硫酸盐浓度: g/dm^3
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = sulphates)) +
+        geom_histogram(bins = 70) +
+        xlim(0.2, 0.9)
+```
+
+由图，大多数葡萄酒的硫酸盐浓度在0.3-0.7g/dm^3范围内，呈正态分布。相关统计值如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(sulphates))
+```
+
+11. alcohol/酒精度: %
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = alcohol)) +
+      geom_histogram(bins = 63)
+```
+
+由图，酒精度变量呈长尾分布，相关统计值如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+with(wine, summary(alcohol))
+```
+
+12. quality/品质：0~10
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = quality)) +
+        geom_histogram(stat = 'count')
+```
+
+将葡萄酒品质视为有序的因子变量。由图，葡萄酒的品质均在3-9之间。
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+该数据集中有4898个种类的葡萄酒样本，包含13个变量。
+
+其他的观测结果：
+
+* 大部分葡萄酒的品质范围在5-7之间；
+* 葡萄酒的密度差异较小
+
+
+### What is/are the main feature(s) of interest in your dataset?
+
+葡萄酒的品质（评分）。通过探索其他变量和葡萄酒品质的关系，可以得出一系列统计推论。
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+由于还没有开始探索双变量及多变量关系，我认为除品质和序号外的其他11个变量都会有助于对葡萄酒品质的调查分析。
+
+### Did you create any new variables from existing variables in the dataset?
+没有。因为除品质外各变量间相关性较小或者未知，所以没有生成新的变量。
+
+### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
+在探索过程中，以下几个变量在直方图中形成较为偏斜的分布，因此使用对数转换方式以形成正态分布的图形：
+
+* volatile acidity/挥发性酸度: g/dm^3
+* residual sugar/残留糖分: g/dm^3
+* sulphates/硫酸盐浓度: g/dm^3
+
+以下几个变量存在较大/小的异常值，因此通过限制范围获得更加合理的分布直方图：
+
+* fixed acidity/非挥发性酸度: g/dm^3
+* citric acid/柠檬酸: g/dm^3
+* residual sugar/残留糖分: g/dm^3
+* chlorides/盐分: g/dm^3
+* free sulfur dioxide/游离二氧化硫: mg/dm^3
+* total sulfur dioxide/总二氧化硫: mg/dm^3
+* sulphates/硫酸盐浓度: g/dm^3
+
+
+
+
+
+
+# Bivariate Plots Section
+```{r echo=FALSE, Bivariate_Plots}
+wine <- wine[c(-1, -1)]
+
+ggpairs(wine[c(1:6, 12)]) +
+   theme(legend.position = "none",
+        panel.grid.major = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title.x = element_text(angle = 180, vjust = 1, color = "black"),
+        panel.border = element_rect(fill = NA))
+```
+
+从上图可以看出，盐分与葡萄酒质量有一定相关性，相关系数达到-0.21，因此选择这两个变量进行分析。
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggpairs(wine[c(7: 12)]) +
+   theme(legend.position = "none",
+        panel.grid.major = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title.x = element_text(angle = 180, vjust = 1, color = "black"),
+        panel.border = element_rect(fill = NA))
+```
+
+再由上图，密度和酒精度和葡萄酒品质有相关性，因此选择研究这两个变量。
+接下来以盐分、密度和酒精度三个变量对葡萄酒品质变量依次做探索性分析。
+同时可以发现，酒精度和密度相关性较强：根据常识，酒精的密度低于水，因此酒精度越高，酒的密度会较低，两个变量不相互独立，因此不作分析。
+
+首先作散点图：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = chlorides, y = quality)) +
+      geom_point()
+```
+
+由于品质是整数并且有从低至高的顺序，因此可以将葡萄酒品质转化成因子变量，作箱线图分析：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+wine$quality <- factor(wine$quality)
+ggplot(data = wine, aes(x = quality, y = chlorides)) +
+        geom_boxplot() +
+        ylim(0, 0.09)
+```
+
+由箱线图可以看出，品质较高的白葡萄酒盐度总体较低。相关统计数据如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+by(wine$chlorides, wine$quality, summary)
+
+```
+
+
+同理，对密度和葡萄酒品质作箱线图分析：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = quality, y = density)) +
+        geom_boxplot() +
+        ylim(0.989, 0.9975)
+```
+
+同样地，总体而言品质更高的葡萄酒密度会偏低。相关统计量如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+by(wine$density, wine$quality, summary)
+```
+
+
+对酒精度和葡萄酒作箱线图分析：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = quality, y = alcohol)) +
+        geom_boxplot()
+```
+
+由图可以看出，品质好的葡萄酒酒精度大体也会偏高，相关统计量如下：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+by(wine$alcohol, wine$quality, summary)
+```
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+根据以上分析，可以初步得出以下推论：
+
+* 葡萄酒的品质和盐度、酒精度和密度相关程度较高，与其他变量相关程度较低；
+* 品质越好的葡萄酒总体而言盐度和密度会更低，酒精度会更高。
+
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+
+酒精度和密度相关程度高，其原因在于这两个变量是不相互独立的，某一方变化会导致另一方的变化。
+
+### What was the strongest relationship you found?
+
+酒精度和密度的相关性是最强的。
+
+
+
+
+# Multivariate Plots Section
+
+```{r echo=FALSE, Multivariate_Plots}
+ggplot(data = wine, aes(x = alcohol, y = density)) +
+        geom_point(aes(color = quality)) +
+        ylim(0.985, 1.005) +
+        scale_colour_brewer()
+```
+
+观察散点图可以得知，品质较好的葡萄酒在散点图右下方聚集，因此可以显示出葡萄酒的品质和密度及酒精度的较强相关性。
+
+进一步加入盐度变量：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = wine, aes(x = alcohol, y = density)) +
+        geom_point(aes(color = quality, size = chlorides)) +
+        ylim(0.985, 1.005) +
+        scale_colour_brewer()
+```
+
+可以看出，品质较高的葡萄酒，盐度相对偏小。
+
+通过以上分析建立线性回归模型：
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+wine$quality = unfactor(wine$quality)
+m1 <- lm(I(quality) ~ alcohol + chlorides, data = wine)
+m2 <- update(m1, ~ . + fixed.acidity + log(volatile.acidity) + citric.acid + log(residual.sugar) + free.sulfur.dioxide + total.sulfur.dioxide + pH + sulphates)
+mtable(m1, m2)
+```
+由图可见，酒精度和盐度可以解释20%的葡萄酒品质，而加上其他的变量也仅能解释30%。
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+
+变量间的关系：
+品质好的葡萄酒密度更低，酒精度更高，盐度也更低。在多变量相关分析时可以明显看出这一点。
+
+### Were there any interesting or surprising interactions between features?
+
+没有。
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
+
+建立了多元线性回归模型，但该模型的拟合效果并不好。这可能与因变量为因子变量或者自变量数据处理得不够充分有关。但尽管如此，该模型的相关系数依然有30%，具有一定的解释力。
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+ggplot(data = wine, aes(x = quality)) +
+        geom_histogram(stat = 'count') +
+        ggtitle('葡萄酒品质分布')
+```
+
+### Description One
+该图显示了葡萄酒的评分分布。可以看到，虽然评分范围为0-10，但品质评分为0、1、2、10的葡萄酒是没有的，绝大部分都在5-7之间，形成明显的集中趋势。
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+wine$quality <- factor(wine$quality)
+ggplot(data = wine, aes(x = quality, y = chlorides)) +
+        geom_boxplot() +
+        ylim(0, 0.09) +
+        ggtitle('不同品质葡萄酒的盐度分布')
+```
+
+### Description Two
+
+该图显示出葡萄酒品质和盐度的关系。整体而言，盐度越低的葡萄酒品质越好。
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+ggplot(data = wine, aes(x = alcohol, y = density)) +
+        geom_point(aes(color = quality, size = chlorides, type = 'div')) +
+        ylim(0.985, 1.005) +
+        scale_colour_brewer()
+        
+        ggtitle('葡萄酒品质和盐度、密度、酒精度的关系')
+```
+
+### Description Three
+
+
+这幅图探索了盐度、密度、酒精度和葡萄酒品质4个变量的关系。可以看到，品质为5的葡萄酒大部分集中于左上方，点较大，品质为7的葡萄酒则集中于右下方，点较小。这充分说明了葡萄酒品质的影响因素：盐度越低、酒精度越高、密度越小，则品质越好。
+
+
+------
+
+# Reflection
+
+本次探索性数据分析采用的是近5000份白葡萄酒样本数据。本数据的分析导向也十分明显，即“影响白葡萄酒品质的因素有哪些”，所呈现的变量几乎都是为这个目的而服务的。因此这也限制了一部分数据分析工作的开展，但同时有利于明确分析导向。
+
+通过对单变量、双变量和多变量分析，确定了与葡萄酒品质相关性较强的三个因素即酒精度、密度和盐度，与其他变量的相关性则较小。通过绘制图表，进行描述性统计量的计算，并建立多元线性回归模型，初步分析了影响葡萄酒质量的各个因素。
+
+这次分析的不足也是十分明显的。比如我将评分作为数值变量进行线性回归，方法并不科学，但由于统计学和机器学习基础薄弱，还没有办法通过更好的分类方法建立模型。同时探究的变量数量也比较少，分析还不够彻底。
+
+
+
+
+
