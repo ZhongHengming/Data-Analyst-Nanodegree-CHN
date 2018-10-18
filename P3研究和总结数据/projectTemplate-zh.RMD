@@ -10,11 +10,17 @@ TITLE by YOUR_NAME_HERE
 # 应当在文件中，对所有代码块设为 echo=FALSE 。
 
 library(ggplot2)
+library(GGally)
+library(psych)
+library(varhandle)
+library(memisc)
+library(RColorBrewer)
 ```
 
 ```{r echo=FALSE, Load_the_Data}
 # 加载数据
-
+wine = read.csv('wineQualityReds.csv')
+str(wine)
 ```
 
 # 单变量绘图选择
